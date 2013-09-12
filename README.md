@@ -2,6 +2,7 @@ Alloy preformatter
 ==================
 
 Simple alloy tasks to precompile files :
+
 1. .jade to .xml
 2. .tss to .js
 3. .tss.coffee to .tss
@@ -26,7 +27,10 @@ Then you can retry compilation :)
 
     alloy compile
 
+-------------
+
 Thanks a lot for the following ressources :
+
 * http://www.yydigital.com/blog/2012/11/8/Alloy_With_Jade
 * https://github.com/brantyoung/coffee-alloy
 * https://github.com/vastness/lazy-alloy
