@@ -1,0 +1,79 @@
+var changeFormat, coffee, coffee2js, coffee2tss, coffeeFiles, fs, glob, jade, jade2xml, jadeFiles, path, styleFiles;
+
+fs = require('fs');
+
+path = require('path');
+
+glob = require('glob');
+
+jade = require('jade');
+
+coffee = require("coffee-script");
+
+jadeFiles = glob.sync("*views/**/*.jade");
+
+styleFiles = glob.sync("*styles/**/*.tss.coffee");
+
+coffeeFiles = glob.sync("*controllers/**/*.coffee");
+
+jade2xml = function(data) {
+  return jade.compile(data, {
+    pretty: true
+  })(this);
+};
+
+coffee2js = function(data) {
+  return coffee.compile(data, {
+    bare: true
+  });
+};
+
+coffee2tss = function(data) {
+  return coffee2js(data).split('\n').slice(3, -2).join('\n');
+};
+
+changeFormat = function(filename, from, to, transform) {
+  var content, data, newFilename;
+  newFilename = filename.replace(from, to);
+  data = fs.readFileSync(filename, 'utf8');
+  content = transform(data);
+  return fs.writeFileSync(newFilename, content, 'utf8');
+};
+
+task('pre:compile', function(event, logger) {
+  var coffeeFile, jadeFile, styleFile, _i, _j, _k, _len, _len1, _len2, _results;
+  logger.info('----- COFFEE/JADE PREPROCESSOR -----');
+  for (_i = 0, _len = jadeFiles.length; _i < _len; _i++) {
+    jadeFile = jadeFiles[_i];
+    changeFormat(jadeFile, '.jade', '.xml', jade2xml);
+  }
+  for (_j = 0, _len1 = coffeeFiles.length; _j < _len1; _j++) {
+    coffeeFile = coffeeFiles[_j];
+    changeFormat(coffeeFile, '.coffee', '.js', coffee2js);
+  }
+  _results = [];
+  for (_k = 0, _len2 = styleFiles.length; _k < _len2; _k++) {
+    styleFile = styleFiles[_k];
+    _results.push(changeFormat(styleFile, '.tss.coffee', '.tss', coffee2tss));
+  }
+  return _results;
+});
+
+task('post:compile', function(event, logger) {
+  var coffeeFile, jadeFile, styleFile, _i, _j, _k, _len, _len1, _len2, _results;
+  logger.info('----- COFFEE/JADE POSTPROCESSOR -----');
+  for (_i = 0, _len = jadeFiles.length; _i < _len; _i++) {
+    jadeFile = jadeFiles[_i];
+    fs.unlinkSync(jadeFile.replace('.jade', '.xml'));
+  }
+  for (_j = 0, _len1 = coffeeFiles.length; _j < _len1; _j++) {
+    coffeeFile = coffeeFiles[_j];
+    fs.unlinkSync(coffeeFile.replace('.coffee', '.js'));
+  }
+  _results = [];
+  for (_k = 0, _len2 = styleFiles.length; _k < _len2; _k++) {
+    styleFile = styleFiles[_k];
+    _results.push(fs.unlinkSync(styleFile.replace('.tss.coffee', '.tss')));
+  }
+  return _results;
+});
