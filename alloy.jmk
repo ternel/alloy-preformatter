@@ -8,11 +8,11 @@ jade = require('jade');
 
 coffee = require("coffee-script");
 
-jadeFiles = glob.sync("**views/**/*.jade");
+jadeFiles = glob.sync("/**views/**/*.jade");
 
-styleFiles = glob.sync("**styles/**/*.tss.coffee");
+styleFiles = glob.sync("/**styles/**/*.tss.coffee");
 
-coffeeFiles = glob.sync("**controllers/**/*.coffee");
+coffeeFiles = glob.sync("/**controllers/**/*.coffee");
 
 jade2xml = function(data) {
   return jade.compile(data, {

@@ -4,9 +4,9 @@ jade = require('jade')
 coffee = require("coffee-script")
 
 # File search
-jadeFiles = glob.sync("**views/**/*.jade")
-styleFiles = glob.sync("**styles/**/*.tss.coffee")
-coffeeFiles = glob.sync("**controllers/**/*.coffee")
+jadeFiles = glob.sync("/**views/**/*.jade")
+styleFiles = glob.sync("/**styles/**/*.tss.coffee")
+coffeeFiles = glob.sync("/**controllers/**/*.coffee")
 
 # Transformation functions
 jade2xml = (data) ->
