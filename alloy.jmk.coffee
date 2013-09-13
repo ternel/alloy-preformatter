@@ -1,13 +1,12 @@
 fs = require('fs')
-path = require('path')
 glob = require('glob')
 jade = require('jade')
 coffee = require("coffee-script")
 
 # File search
-jadeFiles = glob.sync("*views/**/*.jade")
-styleFiles = glob.sync("*styles/**/*.tss.coffee")
-coffeeFiles = glob.sync("*controllers/**/*.coffee")
+jadeFiles = glob.sync("**views/**/*.jade")
+styleFiles = glob.sync("**styles/**/*.tss.coffee")
+coffeeFiles = glob.sync("**controllers/**/*.coffee")
 
 # Transformation functions
 jade2xml = (data) ->
@@ -35,6 +34,9 @@ task 'pre:compile', (event, logger) ->
     changeFormat(coffeeFile, '.coffee', '.js', coffee2js)
   for styleFile in styleFiles
     changeFormat(styleFile, '.tss.coffee', '.tss', coffee2tss)
+  logger.debug "#{jadeFiles.length} jade files compiles"
+  logger.debug "#{styleFiles.length} style files compiles"
+  logger.debug "#{coffeeFiles.length} coffee files compiles"
 
 task 'post:compile', (event, logger) ->
   logger.info '----- COFFEE/JADE POSTPROCESSOR -----'
@@ -44,3 +46,4 @@ task 'post:compile', (event, logger) ->
     fs.unlinkSync(coffeeFile.replace('.coffee', '.js'))
   for styleFile in styleFiles
     fs.unlinkSync(styleFile.replace('.tss.coffee', '.tss'))
+  fs.writeFileSync(event.dir.project + '/app/views/index.xml', '<Alloy />', 'utf8');
