@@ -4,7 +4,7 @@ Alloy preformatter
 Simple alloy tasks to precompile files :
 
 1. .jade to .xml
-2. .tss to .js
+2. .coffee to .js
 3. .tss.coffee to .tss
 
 Requirements
